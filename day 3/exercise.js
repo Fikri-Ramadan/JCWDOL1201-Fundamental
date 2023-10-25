@@ -55,6 +55,20 @@ const removedSentence = sentence.replace(searchString, '');
 
 console.log(`${sentence}, ${searchString} -> ${removedSentence}`);
 
+// uppercase first word of sentence
+const someStrings = 'hello world';
+let uppercaseFirstWord = '';
+
+for (let i = 0; i < someStrings.length; i++) {
+  if (i === 0 || someStrings[i - 1] === ' ') {
+    uppercaseFirstWord += someStrings[i].toUpperCase();
+  } else {
+    uppercaseFirstWord += someStrings[i].toLowerCase();
+  }
+}
+
+console.log(`${someStrings} -> ${uppercaseFirstWord}`);
+
 // reverse a string
 const someString = 'hello';
 const reversedString = someString.split('').reverse().join('');
@@ -96,7 +110,13 @@ console.log(
 // show the type data
 const someData = 'hello';
 
-console.log(`${someData} -> ${typeof someData}`);
+if (typeof someData === 'string') {
+  console.log(`${someData} -> 1`);
+} else if (typeof someData === 'number') {
+  console.log(`${someData} -> 2`);
+} else {
+  console.log(`${someData} -> 3`);
+}
 
 // change every letter a into *
 const words = 'An apple a day keeps the doctor away';
@@ -109,3 +129,5 @@ for (let i = 0; i < arrOfWords.length; i++) {
 }
 
 console.log(`${words} -> ${arrOfWords.join('')}`);
+
+// console.log(words.replace(/a/gi, '*'))
