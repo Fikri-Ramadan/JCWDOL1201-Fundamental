@@ -1,5 +1,12 @@
 // Exercise 1
 const compareTwoObj = (obj1, obj2) => {
+  const obj1Length = Object.entries(obj1).length;
+  const obj2Length = Object.entries(obj2).length;
+
+  if (obj1Length !== obj2Length) {
+    return false;
+  }
+
   for (let key in obj1) {
     if (obj1[key] != obj2[key]) {
       return false;
@@ -9,11 +16,13 @@ const compareTwoObj = (obj1, obj2) => {
 };
 
 let obj1 = {
-  a: 'hello',
+  a: 1,
+  b: 2,
 };
 
 let obj2 = {
   a: 1,
+  b: 2,
 };
 
 console.log(obj1, '==', obj2, compareTwoObj(obj1, obj2));
@@ -86,29 +95,32 @@ const switchKeyValue = (arr) => {
   return newArr;
 };
 
-const arrObj = [{ name: 'David', age: 20 }];
+const arrObj = [
+  { name: 'David', age: 20 },
+  { name: 'a', age: 18, email: 's@gmail.com' },
+];
 
 console.log(arrObj, '->', switchKeyValue(arrObj));
 
 // ===================================================================
 // Exercise 5
 let stringResult = '';
-let result = 1;
 const n = 5;
 
-const factorialNumber = (n) => {
-  result *= n;
+const factorialNumber = (n, result = 1) => {
   stringResult += `${n}`;
   if (n > 1) {
     stringResult += ' x ';
   }
 
   if (n > 1) {
-    factorialNumber(n - 1);
+    return factorialNumber(n - 1, (result *= n));
   }
+
+  return result;
 };
 
-factorialNumber(n);
+let result = factorialNumber(n);
 
 console.log(`${n}!`, '->', stringResult, '=', result);
 
@@ -128,6 +140,9 @@ class Player {
 
   hit(power) {
     this.health -= power;
+    if (this.health <= 0) {
+      this.health = 0;
+    }
   }
 
   useItem(item) {
@@ -165,31 +180,37 @@ class ShootingGame {
 
   start() {
     let round = 1;
-    while (true) {
+    const first = Math.floor(Math.random() * 2);
+
+    while (this.player1.health > 0 && this.player2.health > 0) {
       console.log(`- round ${round++}`);
-      this.player1.showStatus();
-      this.player2.showStatus();
 
-      console.log();
-      this.player1.useItem(this.getRandomItem());
-      this.player2.useItem(this.getRandomItem());
-
-      this.player1.hit(this.player2.power);
-      this.player2.hit(this.player1.power);
-
-      console.log();
-      console.log('after shooting');
       this.player1.showStatus();
       this.player2.showStatus();
       console.log();
 
-      if (this.player1.health <= 0 && this.player2.health <= 0) {
-        return console.log('draw!');
-      } else if (this.player2.health <= 0) {
-        return console.log(`${this.player1.name} wins!`);
-      } else if (this.player1.health <= 0) {
-        return console.log(`${this.player2.name} wins!`);
+      if (first) {
+        console.log(this.player1.name, 'turn');
+        this.player1.useItem(this.getRandomItem());
+
+        this.player2.hit(this.player1.power);
+
+        this.player2.showStatus();
+      } else {
+        console.log(this.player2.name, 'turn');
+        this.player2.useItem(this.getRandomItem());
+        this.player1.hit(this.player2.power);
+
+        this.player1.showStatus();
       }
+
+      console.log();
+    }
+
+    if (this.player2.health <= 0) {
+      return console.log(`${this.player1.name} wins!`);
+    } else if (this.player1.health <= 0) {
+      return console.log(`${this.player2.name} wins!`);
     }
   }
 }
