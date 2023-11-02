@@ -180,7 +180,6 @@ class ShootingGame {
 
   start() {
     let round = 1;
-    const first = Math.floor(Math.random() * 2);
 
     while (this.player1.health > 0 && this.player2.health > 0) {
       console.log(`- round ${round++}`);
@@ -189,19 +188,26 @@ class ShootingGame {
       this.player2.showStatus();
       console.log();
 
-      if (first) {
-        console.log(this.player1.name, 'turn');
-        this.player1.useItem(this.getRandomItem());
+      console.log(this.player1.name, 'turn');
+      this.player1.useItem(this.getRandomItem());
 
-        this.player2.hit(this.player1.power);
+      this.player2.hit(this.player1.power);
 
-        this.player2.showStatus();
-      } else {
-        console.log(this.player2.name, 'turn');
-        this.player2.useItem(this.getRandomItem());
-        this.player1.hit(this.player2.power);
+      this.player2.showStatus();
 
-        this.player1.showStatus();
+      if (this.player2.health <= 0) {
+        break;
+      }
+
+      console.log(this.player2.name, 'turn');
+      this.player2.useItem(this.getRandomItem());
+
+      this.player1.hit(this.player2.power);
+
+      this.player1.showStatus();
+
+      if (this.player1.health <= 0) {
+        break;
       }
 
       console.log();
