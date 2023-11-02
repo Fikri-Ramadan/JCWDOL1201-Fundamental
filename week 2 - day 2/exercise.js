@@ -55,6 +55,7 @@ const calcStudentData = (students = []) => {
 console.log(calcStudentData(students));
 
 // 2. Create a program to create transaction
+console.log();
 console.log('============================');
 console.log('Soal Exercise 2');
 console.log('============================');
@@ -71,39 +72,54 @@ class Transaction {
   #products = [];
 
   getTotalPrice() {
+    this.#total = this.#products.reduce(
+      (acc, curr) => acc + curr.price * curr.qty,
+      0
+    );
+
     return this.#total;
   }
 
-  checkout() {
-    return {
-      total: this.#total,
-      products: this.#products,
-    };
+  getProducts() {
+    return this.#products;
   }
 
-  addToCart(product) {
+  checkout(pay = 0) {
+    if (pay < this.#total) {
+      return console.log('Uang anda tidak cukup');
+    }
+    pay -= this.#total;
+    if (pay === 0) {
+      console.log('Terimakasih');
+    } else {
+      console.log(
+        `Terimakasih, kembalian anda Rp.${pay.toLocaleString('id-ID')},00`
+      );
+    }
+    this.#total = 0;
+  }
+
+  addToCart(product, qty) {
+    if (!product instanceof Product) {
+      return console.log('invalid product');
+    }
     const checkProductIsExist =
       this.#products.findIndex((prod) => prod.name === product.name) !== -1;
 
     if (!checkProductIsExist) {
-      this.#products.push({ ...product, qty: 1 });
+      this.#products.push({ ...product, qty: qty });
     } else {
       this.#products = this.#products.map((prod) => {
         if (prod.name === product.name) {
           return {
             ...prod,
-            qty: prod.qty + 1,
+            qty: prod.qty + qty,
           };
         } else {
           return { ...prod };
         }
       });
     }
-
-    this.#total = this.#products.reduce(
-      (acc, curr) => acc + curr.price * curr.qty,
-      0
-    );
   }
 }
 
@@ -111,12 +127,14 @@ const realme = new Product('realme 3', 2000000);
 const samsung = new Product('samsung j2 prime', 1200000);
 
 const transaction = new Transaction();
-transaction.addToCart(realme);
-transaction.addToCart(realme);
-transaction.addToCart(samsung);
-transaction.addToCart(realme);
+transaction.addToCart(realme, 2);
+transaction.addToCart(realme, 3);
+transaction.addToCart(samsung, 4);
+transaction.addToCart(realme, 5);
 
-console.log('total', transaction.getTotalPrice());
-console.log('checkout', transaction.checkout());
+const totalPrice = transaction.getTotalPrice();
+const cart = transaction.getProducts();
 
-// coba Object.keys, Object.entries
+console.log('total harga ->', totalPrice);
+console.log('keranjang anda ->', cart);
+transaction.checkout(24800000);
